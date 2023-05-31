@@ -2,6 +2,10 @@ import { Router } from "express";
 import * as placeController from '../controller/placeController';
 import * as bacisInfoController from '../controller/basicInfoController';
 import * as religionController from '../controller/religionController';
+import * as institutionController from '../controller/institutionController';
+import * as academicController from '../controller/academicController';
+import * as occupationController from '../controller/occupationController';
+import * as employerController from '../controller/employerController';
 
 const router = Router()
 
@@ -63,5 +67,44 @@ router
     .post(religionController.addCast)
     .delete(religionController.deleteCaste)
 
+// ------------- INSTITUTION --------------
+router
+    .route('/institution/:type')
+    .get(institutionController.getInstitutions)
+    .post(institutionController.addInstitution)
+    .delete(institutionController.deleteInstitution)
+
+// ------------- ACADEMIC ----------------
+router
+    .route('/academic/stream')
+    .get(academicController.getStreams)
+    .post(academicController.addStream)
+    .delete(academicController.deleteStream)
+
+router
+    .route('/academic/course')
+    .get(academicController.getCourses)
+    .post(academicController.addCourse)
+    .delete(academicController.deleteCourse)
+
+// ------------- OCCUPATION --------------- 
+router
+    .route('/occupation/stream')
+    .get(occupationController.getStreams)
+    .post(occupationController.addStream)
+    .delete(occupationController.deleteStream)
+
+router
+    .route('/occupation/designation')
+    .get(occupationController.getDesignations)
+    .post(occupationController.addDesignation)
+    .delete(occupationController.deleteDesignation)
+
+// -------------- EMPLOYERS ---------------
+router
+    .route('/employer')
+    .get(employerController.getEmployers)
+    .post(employerController.addEmployer)
+    .delete(employerController.deleteEmployer)
 
 export default router;

@@ -1,9 +1,9 @@
 import { Document, Types, model, Schema } from "mongoose";
 
 enum institutionType {
-    College = 'College',
-    University = 'University',
-    Institute = 'Institute'
+    college = 'college',
+    university = 'university',
+    institute = 'institute',
 }
 
 interface IInstitution extends Document {
