@@ -5,7 +5,7 @@ interface Icountry extends Document {
 }
 
 const countrySchema = new Schema({
-    name: { type: String, required: true, unique:true }
+    name: { type: String, require: true, unique: true }
 })
 
 export default model<Icountry>('Country', countrySchema);

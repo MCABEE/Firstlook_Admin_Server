@@ -11,8 +11,7 @@ import AppError from "../util/appError";
 // New Country
 export const createCountry = catchAsync(async (req: Request, res: Response) => {
     const { country } = req.body;
-    const newCounty = new countryModel({ name: country });
-    await newCounty.save();
+    await countryModel.create({ name: country });
     res.sendStatus(201);
 })
 
@@ -41,9 +40,11 @@ export const createStates = catchAsync(async (req: Request, res: Response) => {
     res.sendStatus(201)
 })
 
-// Get all States
+// Get States
 export const getStates = catchAsync(async (req: Request, res: Response) => {
-    const states = await stateModel.find({})
+    const country = req.query?.country
+    const query = country ? { country } : {}
+    const states = await stateModel.find(query)
     res.status(200).json({ states })
 })
 
@@ -66,9 +67,11 @@ export const createDistrict = catchAsync(async (req: Request, res: Response) => 
     res.sendStatus(201)
 })
 
-// Get all district
+// Get districts
 export const getDistricts = catchAsync(async (req: Request, res: Response) => {
-    const districts = await districtModel.find({}).populate('state')
+    const stateId = req.query?.stateId
+    const query = stateId ? { state: stateId } : {}
+    const districts = await districtModel.find(query).populate('state')
     res.status(200).json({ districts })
 })
 
@@ -84,7 +87,7 @@ export const deleteDistrict = catchAsync(async (req: Request, res: Response) => 
 export const newCity = catchAsync(async (req: Request, res: Response) => {
     const { stateId, city } = req.body;
     const newCity = new cityModel({
-        state:stateId,
+        state: stateId,
         name: city
     })
     await newCity.save()
@@ -132,9 +135,9 @@ export const deleteHomeTown = catchAsync(async (req: Request, res: Response) => 
 
 // New Pincode
 export const newPincode = catchAsync(async (req: Request, res: Response) => {
-    const { district, pincode, postOffice } = req.body;
+    const { districtId, pincode, postOffice } = req.body;
     const newPincode = new pincodeModel({
-        district,
+        district: districtId,
         code: pincode,
         postOffice,
     })

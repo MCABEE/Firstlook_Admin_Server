@@ -15,8 +15,8 @@ export const addReligion = catchAsync(async (req: Request, res: Response) => {
 
 // Get all riligions
 export const getReligions = catchAsync(async (req: Request, res: Response) => {
-    const riligions = religionModel.find({})
-    res.status(200).json({ riligions })
+    const religions = await religionModel.find({})
+    res.status(200).json({ religions })
 })
 
 // Delete a riligion

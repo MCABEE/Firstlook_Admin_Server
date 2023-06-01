@@ -11,7 +11,7 @@ import errorHandler from './middleware/errorHandler'
 import { authMiddleware } from './middleware/authMiddleware'
 
 const app = express()
-app.use(cors())
+app.use(cors({ origin: '*', methods: ["GET", "POST", "DELETE", "PATCH"] }))
 
 // fixing "413 Request Entity Too Large" errors
 app.use(express.json({ limit: "5mb" }))
@@ -29,7 +29,6 @@ app.use('/api/admin/dataManager', dataManager)
 // Error Handler
 app.use(() => { throw new AppError({ statusCode: 404, message: 'Route not found!' }) })
 app.use(errorHandler)
-
 
 dbConnection().then(() => {
     const port = env.PORT || 8000
