@@ -39,22 +39,24 @@ export const addCast = catchAsync(async (req: Request, res: Response) => {
 
 // Get all cast
 export const getCast = catchAsync(async (req: Request, res: Response) => {
-    const religion = req.query?.religion
+    const religion = req.query?.religion || null;
 
-    const query = religion ? [
+    const castes = await casteModel.aggregate([
         {
-            $match: { religion: religion }
+            $match: {
+                $expr: {
+                    $cond: {
+                        if: { $ne: [religion, null] },
+                        then: { $eq: ['$religion', religion] },
+                        else: {}
+                    }
+                }
+            }
         },
-        {
-            $group: { _id: '$religion', castes: { $push: '$name' } }
-        },
-    ] : [
         {
             $group: { _id: '$religion', castes: { $push: '$name' } }
         }
-    ];
-
-    const castes = await casteModel.aggregate(query)
+    ])
     res.status(200).json({ castes })
 })
 

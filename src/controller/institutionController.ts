@@ -9,19 +9,34 @@ export const addInstitution = catchAsync(async (req: Request, res: Response) => 
     const { country, institution, location } = req.body;
     await institutionModel.create({
         country,
-        name:institution,
+        name: institution,
         type,
         location,
     })
     res.sendStatus(201)
 })
 
-// Get all institutions in a country
+// Get institutions in country wise
 export const getInstitutions = catchAsync(async (req: Request, res: Response) => {
     const { type } = req.params;
-    const country = req.query?.country;
-    if (!country) throw new AppError({ statusCode: 400, message: 'Country name required' })
-    const institutions = institutionModel.find({ type, country })
+    const country = req.query?.country || null;
+    const institutions = await institutionModel.aggregate([
+        {
+            $match: {
+                type: type,
+                $expr: {
+                    $cond: {
+                        if: { $ne: [country, null] },
+                        then: { $eq: ['$country', country] },
+                        else: {}
+                    }
+                }
+            }
+        },
+        {
+            $group: { _id: '$country', institutions: { $push: { _id: '$_id', name: '$name', location: '$location' } } }
+        }
+    ])
     res.status(200).json({ institutions })
 })
 
