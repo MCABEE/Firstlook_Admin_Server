@@ -25,7 +25,6 @@ export const getLanguages = catchAsync(async (req: Request, res: Response) => {
         const languages = await languageModel.find({}).populate({ path: 'state', select: 'name' }).sort({ state: 1 })
         res.status(200).json({ languages })
     }
-
 })
 
 // Delete a language
