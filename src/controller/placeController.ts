@@ -17,7 +17,7 @@ export const createCountry = catchAsync(async (req: Request, res: Response) => {
 
 // Get all countries
 export const getCountries = catchAsync(async (req: Request, res: Response) => {
-    const countries = await countryModel.find({})
+    const countries = await countryModel.find({}).sort({ name: 1 })
     res.status(200).json({ countries })
 })
 

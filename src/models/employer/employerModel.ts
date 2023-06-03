@@ -8,7 +8,7 @@ interface IEmployer extends Document {
 
 const employerSchema = new Schema({
     country: { type: String, required: true },
-    stream: { type: String, unique:true, required: true },
+    stream: { type: String, required: true },
     name: { type: String, required: true }
 })
 

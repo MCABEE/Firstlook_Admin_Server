@@ -15,7 +15,7 @@ export const addStream = catchAsync(async (req: Request, res: Response) => {
 
 // Get all streams
 export const getStreams = catchAsync(async (req: Request, res: Response) => {
-    const occupationStreams = await occupationStreamModel.find({})
+    const occupationStreams = await occupationStreamModel.find({}).sort({ name: 1 })
     res.status(200).json({ occupationStreams })
 })
 

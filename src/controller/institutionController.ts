@@ -6,10 +6,10 @@ import institutionModel from "../models/institutions/institutionModel";
 // add new Institution
 export const addInstitution = catchAsync(async (req: Request, res: Response) => {
     const { type } = req.params;
-    const { country, college, location } = req.body;
+    const { country, institution, location } = req.body;
     await institutionModel.create({
         country,
-        name: college,
+        name:institution,
         type,
         location,
     })

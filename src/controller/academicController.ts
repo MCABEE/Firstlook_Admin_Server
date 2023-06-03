@@ -33,7 +33,7 @@ export const addCourse = catchAsync(async (req: Request, res: Response) => {
         stream,
         name: course,
     })
-    res.sendStatus(200)
+    res.sendStatus(201)
 })
 
 // get all courses

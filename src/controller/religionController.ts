@@ -39,14 +39,29 @@ export const addCast = catchAsync(async (req: Request, res: Response) => {
 
 // Get all cast
 export const getCast = catchAsync(async (req: Request, res: Response) => {
-    const castes = await casteModel.find({})
+    const religion = req.query?.religion
+
+    const query = religion ? [
+        {
+            $match: { religion: religion }
+        },
+        {
+            $group: { _id: '$religion', castes: { $push: '$name' } }
+        },
+    ] : [
+        {
+            $group: { _id: '$religion', castes: { $push: '$name' } }
+        }
+    ];
+
+    const castes = await casteModel.aggregate(query)
     res.status(200).json({ castes })
 })
 
 // delete a caste
 export const deleteCaste = catchAsync(async (req: Request, res: Response) => {
-    const casteId = req.query?.id;
-    if (!casteId) throw new AppError({ statusCode: 400, message: 'Invalid id' })
-    await casteModel.findByIdAndDelete(casteId)
+    const caste = req.query?.caste;
+    if (!caste) throw new AppError({ statusCode: 400, message: 'caste name required!' })
+    await casteModel.findOneAndDelete({ name: caste })
     res.sendStatus(200)
 })
