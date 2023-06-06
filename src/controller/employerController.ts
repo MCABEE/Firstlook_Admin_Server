@@ -31,6 +31,9 @@ export const getEmployers = catchAsync(async (req: Request, res: Response) => {
         },
         {
             $group: { _id: { country: '$country', stream: '$stream' }, employers: { $push: { _id: '$_id', name: '$name' } } }
+        },
+        {
+            $sort: { '_id.stream': 1 }
         }
     ])
     res.status(200).json({ employers })
@@ -39,6 +42,6 @@ export const getEmployers = catchAsync(async (req: Request, res: Response) => {
 export const deleteEmployer = catchAsync(async (req: Request, res: Response) => {
     const employerId = req.query?.id;
     if (!employerId) throw new AppError({ statusCode: 400, message: 'Id required' })
-    await employerModel.findByIdAndDelete( employerId )
+    await employerModel.findByIdAndDelete(employerId)
     res.sendStatus(200)
 })

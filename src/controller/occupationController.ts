@@ -15,7 +15,7 @@ export const addStream = catchAsync(async (req: Request, res: Response) => {
 
 // Get all streams
 export const getStreams = catchAsync(async (req: Request, res: Response) => {
-    const occupationStreams = await occupationStreamModel.find({}).sort({ name: 1 })
+    const occupationStreams = await occupationStreamModel.find({})
     res.status(200).json({ occupationStreams })
 })
 
@@ -39,9 +39,15 @@ export const addDesignation = catchAsync(async (req: Request, res: Response) => 
 
 // Get all designations
 export const getDesignations = catchAsync(async (req: Request, res: Response) => {
-    const stream = req.query?.stream;
-    if (!stream) throw new AppError({ statusCode: 400, message: 'Stream name required' })
-    const designations = await designationModel.find({ stream })
+    // const stream = req.query?.stream;
+    const designations = await designationModel.aggregate([
+        {
+            $group: { _id: '$stream', designations: { $push: { _id: '$_id', name: '$name' } } }
+        },
+        {
+            $sort: { _id: 1 }
+        }
+    ])
     res.status(200).json({ designations })
 })
 

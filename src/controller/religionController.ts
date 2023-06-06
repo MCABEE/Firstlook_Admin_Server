@@ -55,6 +55,9 @@ export const getCast = catchAsync(async (req: Request, res: Response) => {
         },
         {
             $group: { _id: '$religion', castes: { $push: '$name' } }
+        },
+        {
+            $sort: { _id: 1 }
         }
     ])
     res.status(200).json({ castes })

@@ -36,7 +36,7 @@ router
 
 router
     .route('/place/homeTown')
-    .get(placeController.newHomeTown)
+    .get(placeController.getHomeTowns)
     .post(placeController.newHomeTown)
     .delete(placeController.deleteHomeTown)
 

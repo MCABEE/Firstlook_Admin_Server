@@ -14,23 +14,41 @@ export const newLanguage = catchAsync(async (req: Request, res: Response) => {
 
 // Get Languages
 export const getLanguages = catchAsync(async (req: Request, res: Response) => {
-    const country = req.query?.country
-    if (country) {
-        const languages = await languageModel.find({}).populate({ path: 'state', match: { country }, select: 'name' }).sort({ state: 1 })
-        const filteredLanguages = languages.filter((language) => language.state !== null);
-        // const states = await stateModel.find({ country }, { _id: 1 })
-        // const languages = await languageModel.find({ state: { $in: states } }).populate('state')
-        res.status(200).json({ languages: filteredLanguages })
-    } else {
-        const languages = await languageModel.find({}).populate({ path: 'state', select: 'name' }).sort({ state: 1 })
-        res.status(200).json({ languages })
-    }
+    const country = req.query?.country || null
+    const languages = await languageModel.aggregate([
+        {
+            $lookup: {
+                from: 'states',
+                localField: 'state',
+                foreignField: '_id',
+                as: 'state'
+            }
+        },
+        {
+            $unwind: '$state'
+        },
+        {
+            $match: {
+                $expr: {
+                    $cond: {
+                        if: { $ne: [country, null] },
+                        then: { $eq: ['$state.country', country] },
+                        else: {}
+                    }
+                }
+            }
+        },
+        {
+            $group: { _id: '$state.country', states: { $push: { stateId: '$state._id', state: '$state.name', languages: '$languages' } } }
+        }
+    ])
+    res.status(200).json({ languages })
 })
 
 // Delete a language
 export const deleteLanguage = catchAsync(async (req: Request, res: Response) => {
-    const { languageId, language } = req.query;
-    if (!languageId || !language) throw new AppError({ statusCode: 400, message: 'Invalid request' })
-    await languageModel.findByIdAndUpdate(languageId, { $pull: { languages: language } })
+    const { stateId, language } = req.query;
+    if (!stateId || !language) throw new AppError({ statusCode: 400, message: 'Invalid request' })
+    await languageModel.findOneAndUpdate({ state: stateId }, { $pull: { languages: language } })
     res.sendStatus(200)
 })

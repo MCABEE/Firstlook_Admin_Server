@@ -38,7 +38,14 @@ export const addCourse = catchAsync(async (req: Request, res: Response) => {
 
 // get all courses
 export const getCourses = catchAsync(async (req: Request, res: Response) => {
-    const courses = await courseModel.find({})
+    const courses = await courseModel.aggregate([
+        {
+            $group: { _id: '$stream', courses: { $push: { _id: '$_id', name: '$name' } } }
+        },
+        {
+            $sort: { _id: 1 }
+        }
+    ])
     res.status(200).json({ courses })
 })
 
