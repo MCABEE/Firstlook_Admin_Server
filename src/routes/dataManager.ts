@@ -6,6 +6,8 @@ import * as institutionController from '../controller/institutionController';
 import * as academicController from '../controller/academicController';
 import * as occupationController from '../controller/occupationController';
 import * as employerController from '../controller/employerController';
+import * as adminPostController from '../controller/adminPostController';
+import uploadMiddleware from "../middleware/uploadMiddleware";
 
 const router = Router()
 
@@ -106,5 +108,12 @@ router
     .get(employerController.getEmployers)
     .post(employerController.addEmployer)
     .delete(employerController.deleteEmployer)
+
+// ------------- ADMIN POST ---------------
+router
+    .route('/adminPost')
+    .get()
+    .post(uploadMiddleware, adminPostController.uploadPost)
+    .delete()
 
 export default router;

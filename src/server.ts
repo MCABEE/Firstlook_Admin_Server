@@ -3,10 +3,10 @@ import env from './util/validateEnv'
 import express from 'express'
 import dbConnection from './config/connection'
 import cors from 'cors'
-import logger from 'morgan'
+// import logger from 'morgan'
 import AppError from './util/appError'
 import dataManager from './routes/dataManager'
-// import auth from './routes/authentication'
+import auth from './routes/authentication'
 import errorHandler from './middleware/errorHandler'
 import { authMiddleware } from './middleware/authMiddleware'
 
@@ -25,6 +25,7 @@ app.get('/', (req, res) => res.status(200).json({ message: 'OK' }))
 app.use('/api/admin/auth', auth)
 app.use(authMiddleware)
 app.use('/api/admin/dataManager', dataManager)
+
 
 // Error Handler
 app.use(() => { throw new AppError({ statusCode: 404, message: 'Route not found!' }) })
