@@ -3,11 +3,14 @@ import catchAsync from "../util/catchAsync";
 import AppError from "../util/appError";
 import occupationStreamModel from "../models/occupation/streamModel";
 import designationModel from "../models/occupation/designationModel";
+import { Types } from "mongoose";
 
 // Add new Stream
 export const addStream = catchAsync(async (req: Request, res: Response) => {
-    const { stream } = req.body;
+    const { category, stream } = req.body;
+
     await occupationStreamModel.create({
+        category,
         name: stream,
     })
     res.sendStatus(201)
@@ -15,7 +18,34 @@ export const addStream = catchAsync(async (req: Request, res: Response) => {
 
 // Get all streams
 export const getStreams = catchAsync(async (req: Request, res: Response) => {
-    const occupationStreams = await occupationStreamModel.find({})
+    const category = req.query?.category || null;
+    const dropdown = req.query?.dropdown || false;
+
+    if (dropdown) {
+        const query = category ? { category } : {};
+        const occupationStreams = await occupationStreamModel.find(query)
+        return res.status(200).json({ occupationStreams })
+    }
+
+    const occupationStreams = await occupationStreamModel.aggregate([
+        {
+            $match: {
+                $expr: {
+                    $cond: {
+                        if: { $ne: [category, null] },
+                        then: { $eq: ['$category', category] },
+                        else: {}
+                    }
+                }
+            }
+        },
+        {
+            $group: { _id: '$category', streams: { $push: { _id: '$_id', name: '$name' } } }
+        },
+        {
+            $sort: { _id: 1 }
+        }
+    ])
     res.status(200).json({ occupationStreams })
 })
 
@@ -29,9 +59,9 @@ export const deleteStream = catchAsync(async (req: Request, res: Response) => {
 
 // Add new Designation
 export const addDesignation = catchAsync(async (req: Request, res: Response) => {
-    const { stream, designation } = req.body;
+    const { streamId, designation } = req.body;
     await designationModel.create({
-        stream,
+        stream: streamId,
         name: designation,
     })
     res.sendStatus(200)
@@ -39,15 +69,41 @@ export const addDesignation = catchAsync(async (req: Request, res: Response) => 
 
 // Get all designations
 export const getDesignations = catchAsync(async (req: Request, res: Response) => {
-    // const stream = req.query?.stream;
+    const streamId = req.query?.streamId || null;
     const designations = await designationModel.aggregate([
         {
-            $group: { _id: '$stream', designations: { $push: { _id: '$_id', name: '$name' } } }
+            $match: {
+                $expr: {
+                    $cond: {
+                        if: { $ne: [streamId, null] },
+                        then: { $eq: ['$stream', new Types.ObjectId(streamId as string)] },
+                        else: {}
+                    }
+                }
+            }
         },
         {
-            $sort: { _id: 1 }
+            $lookup: {
+                from: 'occupationstreams',
+                localField: 'stream',
+                foreignField: '_id',
+                as: 'stream'
+            }
+        },
+        {
+            $unwind: '$stream'
+        },
+        {
+            $group: {
+                _id: { category: '$stream.category', stream: '$stream.name' },
+                designations: { $push: { _id: '$_id', name: '$name' } }
+            }
+        },
+        {
+            $sort: { '_id.category': 1 }
         }
     ])
+
     res.status(200).json({ designations })
 })
 

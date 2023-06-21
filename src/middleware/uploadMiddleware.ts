@@ -1,5 +1,6 @@
 import multer, { Multer } from 'multer';
 import { NextFunction, Request, Response } from 'express';
+import AppError from '../util/appError';
 
 // Define the storage configuration for multer
 const storage = multer.diskStorage({
@@ -12,14 +13,14 @@ const storage = multer.diskStorage({
     },
 });
 
-// Create the multer instance with the storage configuration
-const upload: Multer = multer({ storage });
+// Create the multer instance
+const upload = multer({ storage });
 
 export default function (req: Request, res: Response, next: NextFunction) {
     upload.single('image')(req, res, (error: any) => {
         if (error) {
             console.error('Error uploading image:', error);
-            return res.status(500).json({ error: 'Image upload failed' });
+            throw new AppError({ name: 'Multer error', statusCode: 500, message: 'image upload failed' })
         }
 
         next();

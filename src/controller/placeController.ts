@@ -49,7 +49,7 @@ export const getStates = catchAsync(async (req: Request, res: Response) => {
 
     if (dropdown) {
         const query = country ? { country } : {};
-        const states = await stateModel.find(query)
+        const states = await stateModel.find(query).sort({ name: 1 })
         return res.status(200).json({ states })
     }
 
@@ -68,6 +68,9 @@ export const getStates = catchAsync(async (req: Request, res: Response) => {
         {
             $group: { _id: '$country', states: { $push: { _id: '$_id', name: '$name' } } }
         },
+        {
+            $sort: { '_id.country': 1 }
+        }
     ])
     res.status(200).json({ states })
 })
@@ -144,7 +147,7 @@ export const getDistricts = catchAsync(async (req: Request, res: Response) => {
 
     if (dropdown) {
         const query = stateId ? { state: stateId } : {}
-        const districts = await districtModel.find(query)
+        const districts = await districtModel.find(query).sort({ name: 1 })
         return res.status(200).json({ districts })
     }
 
@@ -250,7 +253,8 @@ export const getCities = catchAsync(async (req: Request, res: Response) => {
         },
         {
             $group: {
-                _id: { country:'$state.country', state:'$state.name'}, cities: { $push: { _id: '$_id', name: '$name' } }
+                _id: { country: '$state.country', state: '$state.name' }, 
+                cities: { $push: { _id: '$_id', name: '$name' } }
             }
         },
         {

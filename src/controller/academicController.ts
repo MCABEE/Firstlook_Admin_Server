@@ -15,7 +15,7 @@ export const addStream = catchAsync(async (req: Request, res: Response) => {
 
 // get all streams
 export const getStreams = catchAsync(async (req: Request, res: Response) => {
-    const streams = await streamModel.find({})
+    const streams = await streamModel.find({}).sort({ name: 1 })
     res.status(200).json({ streams })
 })
 
@@ -38,7 +38,19 @@ export const addCourse = catchAsync(async (req: Request, res: Response) => {
 
 // get all courses
 export const getCourses = catchAsync(async (req: Request, res: Response) => {
+    const stream = req.query?.stream || null;
     const courses = await courseModel.aggregate([
+        {
+            $match: {
+                $expr: {
+                    $cond: {
+                        if: { $ne: [stream, null] },
+                        then: { $eq: ['$stream', stream] },
+                        else: {}
+                    }
+                }
+            }
+        },
         {
             $group: { _id: '$stream', courses: { $push: { _id: '$_id', name: '$name' } } }
         },
@@ -53,4 +65,6 @@ export const getCourses = catchAsync(async (req: Request, res: Response) => {
 export const deleteCourse = catchAsync(async (req: Request, res: Response) => {
     const courseId = req.query?.id;
     if (!courseId) throw new AppError({ statusCode: 400, message: 'Id required' })
+    await courseModel.findByIdAndDelete(courseId);
+    res.sendStatus(200);
 })
