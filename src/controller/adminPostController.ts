@@ -5,7 +5,15 @@ import env from '../util/validateEnv';
 import FormData from "form-data";
 import axios from 'axios';
 import fs from 'fs';
+import adminPostModel from "../models/adminPost/adminPostModel";
 
+// get post
+export const getPosts = catchAsync(async (req: Request, res: Response) => {
+    const posts = await adminPostModel.find({}).sort({ createdAt: -1 })
+    res.status(200).json({ posts })
+})
+
+// add post
 export const uploadPost = catchAsync(async (req: Request, res: Response) => {
 
     const imageFile = req.file;
@@ -30,11 +38,43 @@ export const uploadPost = catchAsync(async (req: Request, res: Response) => {
 
     const response = await axios.request(options)
 
-    // Extract the Cloudflare media URL from the response
-    const result = response.data.result
+    // Extract the Cloudflare image URL from the response
+    const imageUrl = response.data.result.variants[0]
+    const imageId = response.data.result.id
+    const { title, buttonName, landingPage, startDate, endDate, audience } = req.body
+
+    await adminPostModel.create({
+        imageUrl, imageId, title, buttonName, landingPage, startDate, endDate, audience: JSON.parse(audience)
+    })
 
     // delete the local image file
     fs.unlinkSync(imageFile.path);
 
-    res.status(200).json({ result })
+    res.sendStatus(200)
+})
+
+// delete post
+export const deletePost = catchAsync(async (req: Request, res: Response) => {
+
+    const postId = req.query?.postId
+    if (!postId) throw new AppError({ name: 'No ID', statusCode: 400, message: 'Post Id required.' })
+
+    const post = await adminPostModel.findById(postId)
+    if (!post) throw new AppError({ statusCode: 400, message: 'Invalid post id' })
+    const imageId = post?.imageId
+
+    const options = {
+        method: 'DELETE',
+        url: `https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/images/v1/${imageId}`,
+        headers: {
+            'Authorization': `Bearer ${env.CLOUDFLARE_API_KEY}`
+        },
+    };
+
+    // delete image from cloudflare
+    await axios.request(options)
+    // delete post from DB
+    await adminPostModel.findByIdAndDelete(postId)
+
+    res.sendStatus(200)
 })

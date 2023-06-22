@@ -112,8 +112,8 @@ router
 // ------------- ADMIN POST ---------------
 router
     .route('/adminPost')
-    .get()
+    .get(adminPostController.getPosts)
     .post(uploadMiddleware, adminPostController.uploadPost)
-    .delete()
+    .delete(adminPostController.deletePost)
 
 export default router;
