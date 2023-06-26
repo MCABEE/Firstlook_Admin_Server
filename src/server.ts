@@ -23,8 +23,7 @@ app.get('/', (req, res) => res.status(200).json({ message: 'OK' }))
 
 // api endpoints
 app.use('/api/admin/auth', auth)
-app.use(authMiddleware)
-app.use('/api/admin/dataManager', dataManager)
+app.use('/api/admin/dataManager', authMiddleware, dataManager)
 
 // Error Handler
 app.use(() => { throw new AppError({ statusCode: 404, message: 'Route not found!' }) })

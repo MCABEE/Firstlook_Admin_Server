@@ -22,6 +22,7 @@ export const newAdmin = catchAsync(async (req: Request, res: Response) => {
 // Login verification
 export const login = catchAsync(async (req: Request, res: Response) => {
     const { email, password, isMaster } = req.body;
+    if(!email || !password ) throw new AppError({statusCode:400, message:'Credentials required'})
     const admin = await adminModel.findOne({ email, isMaster })
     if (!admin) throw new AppError({ statusCode: 401, message: 'Invalid credentials' })
     const isValidPassword = await bcrypt.compare(password, admin.password)
