@@ -5,10 +5,9 @@ import employerModel from "../models/employer/employerModel";
 
 // Add employer
 export const addEmployer = catchAsync(async (req: Request, res: Response) => {
-    const { country, stream, employer } = req.body;
+    const { country, employer } = req.body;
     await employerModel.create({
         country,
-        stream,
         name: employer,
     })
     res.sendStatus(201)
@@ -30,10 +29,10 @@ export const getEmployers = catchAsync(async (req: Request, res: Response) => {
             }
         },
         {
-            $group: { _id: { country: '$country', stream: '$stream' }, employers: { $push: { _id: '$_id', name: '$name' } } }
+            $group: { _id: '$country', employers: { $push: { _id: '$_id', name: '$name' } } }
         },
         {
-            $sort: { '_id.stream': 1 }
+            $sort: { '_id': 1 }
         }
     ])
     res.status(200).json({ employers })

@@ -48,7 +48,6 @@ router
     .post(placeController.newPincode)
     .delete(placeController.deletePincode)
 
-
 // ----------- BASIC INFO -------------
 router
     .route('/basic/motherTounge')
@@ -96,12 +95,6 @@ router
     .post(occupationController.addStream)
     .delete(occupationController.deleteStream)
 
-router
-    .route('/occupation/designation')
-    .get(occupationController.getDesignations)
-    .post(occupationController.addDesignation)
-    .delete(occupationController.deleteDesignation)
-
 // -------------- EMPLOYERS ---------------
 router
     .route('/employer')
@@ -114,6 +107,7 @@ router
     .route('/adminPost')
     .get(adminPostController.getPosts)
     .post(uploadMiddleware, adminPostController.uploadPost)
+    .patch(adminPostController.updatePost)
     .delete(adminPostController.deletePost)
 
 export default router;
