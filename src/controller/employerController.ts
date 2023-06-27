@@ -5,9 +5,9 @@ import employerModel from "../models/employer/employerModel";
 
 // Add employer
 export const addEmployer = catchAsync(async (req: Request, res: Response) => {
-    const { country, employer } = req.body;
+    const { category, employer } = req.body;
     await employerModel.create({
-        country,
+        category,
         name: employer,
     })
     res.sendStatus(201)
@@ -15,21 +15,21 @@ export const addEmployer = catchAsync(async (req: Request, res: Response) => {
 
 // Get employers
 export const getEmployers = catchAsync(async (req: Request, res: Response) => {
-    const country = req.query?.country || null;
+    const category = req.query?.category || null;
     const employers = await employerModel.aggregate([
         {
             $match: {
                 $expr: {
                     $cond: {
-                        if: { $ne: [country, null] },
-                        then: { $eq: ['$country', country] },
+                        if: { $ne: [category, null] },
+                        then: { $eq: ['$category', category] },
                         else: {}
                     }
                 }
             }
         },
         {
-            $group: { _id: '$country', employers: { $push: { _id: '$_id', name: '$name' } } }
+            $group: { _id: '$category', employers: { $push: { _id: '$_id', name: '$name' } } }
         },
         {
             $sort: { '_id': 1 }

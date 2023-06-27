@@ -57,7 +57,6 @@ export const uploadPost = catchAsync(async (req: Request, res: Response) => {
 export const updatePost = catchAsync(async (req: Request, res: Response) => {
     const postId = req.query?.postId
     const postDetails = req.body
-    console.log(postId, postDetails);
 
     if (!postId || !postDetails) {
         throw new AppError({ name: 'Bad Request', statusCode: 400, message: 'Non-sufficient input' })

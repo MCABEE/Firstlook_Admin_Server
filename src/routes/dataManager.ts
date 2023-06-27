@@ -95,6 +95,12 @@ router
     .post(occupationController.addStream)
     .delete(occupationController.deleteStream)
 
+router
+    .route('/occupation/designation')
+    .get(occupationController.getDesignations)
+    .post(occupationController.addDesignation)
+    .delete(occupationController.deleteDesignation)
+
 // -------------- EMPLOYERS ---------------
 router
     .route('/employer')

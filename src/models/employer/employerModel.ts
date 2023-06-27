@@ -1,12 +1,12 @@
 import { Document, Schema, model } from "mongoose";
 
 interface IEmployer extends Document {
-    country: string;
+    category: string;
     name: string;
 }
 
 const employerSchema = new Schema({
-    country: { type: String, required: true },
+    category: { type: String, required: true },
     name: { type: String, required: true }
 })
 
