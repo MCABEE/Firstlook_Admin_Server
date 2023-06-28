@@ -44,7 +44,8 @@ export const uploadPost = catchAsync(async (req: Request, res: Response) => {
     const { title, buttonName, landingPage, startDate, endDate, audience } = req.body
 
     await adminPostModel.create({
-        imageUrl, imageId, title, buttonName, landingPage, startDate, endDate, audience: JSON.parse(audience)
+        image: { url: imageUrl, id: imageId },
+        title, buttonName, landingPage, startDate, endDate, audience: JSON.parse(audience)
     })
 
     // delete the local image file
@@ -73,7 +74,7 @@ export const deletePost = catchAsync(async (req: Request, res: Response) => {
 
     const post = await adminPostModel.findById(postId)
     if (!post) throw new AppError({ statusCode: 400, message: 'Invalid post id' })
-    const imageId = post?.imageId
+    const imageId = post?.image.id
 
     const options = {
         method: 'DELETE',

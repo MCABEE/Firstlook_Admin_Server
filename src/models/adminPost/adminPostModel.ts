@@ -1,8 +1,7 @@
 import { Document, Schema, Date, model } from 'mongoose';
 
 interface IAdminPost extends Document {
-    imageUrl: string;
-    imageId: string;
+    image: { url: string, id: string }
     title: string;
     buttonName: string;
     landingPage: string;
@@ -14,8 +13,10 @@ interface IAdminPost extends Document {
 }
 
 const adminPostSchema = new Schema({
-    imageUrl: { type: String, required: true },
-    imageId: { type: String, required: true },
+    image: {
+        url: { type: String, required: true },
+        id: { type: String, required: true },
+    },
     title: { type: String, required: true },
     buttonName: { type: String },
     landingPage: { type: String },
