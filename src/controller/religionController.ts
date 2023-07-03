@@ -16,7 +16,7 @@ export const addReligion = catchAsync(async (req: Request, res: Response) => {
 
 // Get all riligions
 export const getReligions = catchAsync(async (req: Request, res: Response) => {
-    const religions = await religionModel.find({})
+    const religions = await religionModel.find({}).sort({ name: 1 })
     res.status(200).json({ religions })
 })
 
