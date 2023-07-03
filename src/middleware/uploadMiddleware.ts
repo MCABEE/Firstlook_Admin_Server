@@ -1,10 +1,16 @@
-import multer, { Multer } from 'multer';
+import multer from 'multer';
 import { NextFunction, Request, Response } from 'express';
 import AppError from '../util/appError';
+import fs from 'fs';
 
 // Define the storage configuration for multer
 const storage = multer.diskStorage({
     destination: (req: Request, file: Express.Multer.File, callback: (error: Error | null, destination: string) => void) => {
+
+        if (!fs.existsSync("src/uploads")) {
+            fs.mkdirSync("src/uploads");
+        }
+
         // Specify the destination folder where the uploaded files should be stored
         callback(null, 'src/uploads/');
     },

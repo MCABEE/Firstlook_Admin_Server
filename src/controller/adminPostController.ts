@@ -91,3 +91,31 @@ export const deletePost = catchAsync(async (req: Request, res: Response) => {
 
     res.sendStatus(200)
 })
+
+// video post tesing
+export const videopost = catchAsync(async (req: Request, res: Response) => {
+
+    const videoFile = req.file;
+    if (!videoFile) throw new AppError({ statusCode: 400, message: 'video upload failed' })
+
+    // Read the image file as binary data
+    const fileData = fs.readFileSync(videoFile.path);
+
+    // Create a new FormData object
+    const formData = new FormData();
+    formData.append('file', fileData, { filename: videoFile.originalname });
+
+    const { data } = await axios.post(
+        `https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/stream`,
+        formData,
+        {
+            headers:
+                { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${env.CLOUDFLARE_STREAM_API_TOKEN}` }
+        }
+    )
+
+    // delete the local image file
+    fs.unlinkSync(videoFile.path);
+
+    res.status(200).json({ data })
+})

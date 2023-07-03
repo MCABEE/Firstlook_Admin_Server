@@ -7,6 +7,6 @@ export default cleanEnv(process.env, {
     JWT_ACESS_SECRET: str(),
     JWT_REFRESH_SECRET: str(),
     CLOUDFLARE_API_KEY: str(),
-    CLOUDFLARE_ZONE_ID: str(),
+    CLOUDFLARE_STREAM_API_TOKEN: str(),
     CLOUDFLARE_ACCOUNT_ID: str(),
 })

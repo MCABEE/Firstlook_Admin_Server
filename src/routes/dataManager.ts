@@ -8,6 +8,7 @@ import * as occupationController from '../controller/occupationController';
 import * as employerController from '../controller/employerController';
 import * as adminPostController from '../controller/adminPostController';
 import uploadMiddleware from "../middleware/uploadMiddleware";
+import videoUpload from "../middleware/videoUpload";
 
 const router = Router()
 
@@ -137,5 +138,9 @@ router
     .post(uploadMiddleware, adminPostController.uploadPost)
     .patch(adminPostController.updatePost)
     .delete(adminPostController.deletePost)
+
+router
+    .route('/test/video')
+    .post(videoUpload, adminPostController.videopost)
 
 export default router;
