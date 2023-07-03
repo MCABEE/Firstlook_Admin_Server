@@ -42,17 +42,17 @@ export const createStates = catchAsync(async (req: Request, res: Response) => {
     res.sendStatus(201)
 })
 
+// ================== Get States List ====================
+export const getStatesList = catchAsync(async (req: Request, res: Response) => {
+    const country = req.query?.country || null
+    const query = country ? { country } : {};
+    const states = await stateModel.find(query).sort({ name: 1 })
+    res.status(200).json({ states })
+})
+
 // ================== Get States ====================
 export const getStates = catchAsync(async (req: Request, res: Response) => {
-    const dropdown = req.query?.dropdown || false
     const country = req.query?.country || null
-
-    if (dropdown) {
-        const query = country ? { country } : {};
-        const states = await stateModel.find(query).sort({ name: 1 })
-        return res.status(200).json({ states })
-    }
-
     const states = await stateModel.aggregate([
         {
             $match: {
@@ -69,7 +69,7 @@ export const getStates = catchAsync(async (req: Request, res: Response) => {
             $group: { _id: '$country', states: { $push: { _id: '$_id', name: '$name' } } }
         },
         {
-            $sort: { '_id.country': 1 }
+            $sort: { '_id': 1 }
         }
     ])
     res.status(200).json({ states })
@@ -140,17 +140,17 @@ export const createDistrict = catchAsync(async (req: Request, res: Response) => 
     res.sendStatus(201)
 })
 
+//============== Get districts List ==================
+export const getDistrictsList = catchAsync(async (req: Request, res: Response) => {
+    const stateId = req.query?.stateId || null;
+    const query = stateId ? { state: stateId } : {}
+    const districts = await districtModel.find(query).sort({ name: 1 })
+    return res.status(200).json({ districts })
+})
+
 //============== Get districts ==================
 export const getDistricts = catchAsync(async (req: Request, res: Response) => {
-    const dropdown = req.query?.dropdown || false
     const stateId = req.query?.stateId || null;
-
-    if (dropdown) {
-        const query = stateId ? { state: stateId } : {}
-        const districts = await districtModel.find(query).sort({ name: 1 })
-        return res.status(200).json({ districts })
-    }
-
     const districts = await districtModel.aggregate([
         {
             $match: {
@@ -253,7 +253,7 @@ export const getCities = catchAsync(async (req: Request, res: Response) => {
         },
         {
             $group: {
-                _id: { country: '$state.country', state: '$state.name' }, 
+                _id: { country: '$state.country', state: '$state.name' },
                 cities: { $push: { _id: '$_id', name: '$name' } }
             }
         },

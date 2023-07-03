@@ -4,7 +4,6 @@ import AppError from '../util/appError';
 import env from '../util/validateEnv'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 
-
 interface MyJwtPayload extends JwtPayload {
     adminId: string;
     email: string;

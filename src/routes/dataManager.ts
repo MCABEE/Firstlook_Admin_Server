@@ -25,10 +25,18 @@ router
     .delete(placeController.deleteState)
 
 router
+    .route('/place/state/list')
+    .get(placeController.getStatesList)
+
+router
     .route('/place/district')
     .get(placeController.getDistricts)
     .post(placeController.createDistrict)
     .delete(placeController.deleteDistrict)
+
+router
+    .route('/place/district/list')
+    .get(placeController.getDistrictsList)
 
 router
     .route('/place/city')
@@ -68,6 +76,16 @@ router
     .post(religionController.addCast)
     .delete(religionController.deleteCaste)
 
+router
+    .route('/religion/caste/list')
+    .get(religionController.getnCastesList)
+
+router
+    .route('/religion/diocese')
+    .get(religionController.getDiocese)
+    .post(religionController.addDiocese)
+    .delete(religionController.deleteDiocese)
+
 // ------------- INSTITUTION --------------
 router
     .route('/institution/:type')
@@ -94,6 +112,10 @@ router
     .get(occupationController.getStreams)
     .post(occupationController.addStream)
     .delete(occupationController.deleteStream)
+
+router
+    .route('/occupation/stream/list')
+    .get(occupationController.getStreamsList)
 
 router
     .route('/occupation/designation')

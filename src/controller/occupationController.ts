@@ -15,16 +15,17 @@ export const addStream = catchAsync(async (req: Request, res: Response) => {
     res.sendStatus(201)
 })
 
+// Get streams list
+export const getStreamsList = catchAsync(async (req: Request, res: Response) => {
+    const category = req.query?.category || null;
+    const query = category ? { category } : {};
+    const occupationStreams = await occupationStreamModel.find(query)
+    res.status(200).json({ occupationStreams })
+})
+
 // Get all streams
 export const getStreams = catchAsync(async (req: Request, res: Response) => {
     const category = req.query?.category || null;
-    const dropdown = req.query?.dropdown || false;
-
-    if (dropdown) {
-        const query = category ? { category } : {};
-        const occupationStreams = await occupationStreamModel.find(query)
-        return res.status(200).json({ occupationStreams })
-    }
 
     const occupationStreams = await occupationStreamModel.aggregate([
         {
