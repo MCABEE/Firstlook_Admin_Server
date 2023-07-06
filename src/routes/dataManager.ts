@@ -7,6 +7,7 @@ import * as academicController from '../controller/academicController';
 import * as occupationController from '../controller/occupationController';
 import * as employerController from '../controller/employerController';
 import * as adminPostController from '../controller/adminPostController';
+import * as paymentsController from '../controller/paymentsController';
 import uploadMiddleware from "../middleware/uploadMiddleware";
 import videoUpload from "../middleware/videoUpload";
 
@@ -142,5 +143,14 @@ router
 router
     .route('/test/video')
     .post(videoUpload, adminPostController.videopost)
+
+// -------------- PAYMENT ------------------
+router
+    .route('/payment')
+    .get(paymentsController.getPaymentPlans)
+    .post(paymentsController.addPaymentPlan)
+    .patch(paymentsController.editPaymentPlan)
+    .delete(paymentsController.deletePaymentPlan)
+
 
 export default router;
