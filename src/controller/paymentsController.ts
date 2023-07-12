@@ -36,6 +36,7 @@ export const editPaymentPlan = catchAsync(async (req: Request, res: Response) =>
     res.sendStatus(200)
 })
 
+// delete payment plan
 export const deletePaymentPlan = catchAsync(async (req: Request, res: Response) => {
     const planId = req.query?.id
     await paymentPlanModel.findByIdAndDelete(planId)

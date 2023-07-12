@@ -9,7 +9,6 @@ interface IPincode extends Document {
 const pincodeSchema = new Schema({
     district: { type: Types.ObjectId, ref:'District', required: true },
     code: { type: Number, required: true },
-    postOffice: { type: String, required: true }
 })
 
 export default model<IPincode>('Pincode', pincodeSchema)

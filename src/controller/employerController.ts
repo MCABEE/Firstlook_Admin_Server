@@ -38,6 +38,7 @@ export const getEmployers = catchAsync(async (req: Request, res: Response) => {
     res.status(200).json({ employers })
 })
 
+// delete employer
 export const deleteEmployer = catchAsync(async (req: Request, res: Response) => {
     const employerId = req.query?.id;
     if (!employerId) throw new AppError({ statusCode: 400, message: 'Id required' })

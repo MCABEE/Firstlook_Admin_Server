@@ -7,7 +7,7 @@ import axios from 'axios';
 import fs from 'fs';
 import adminPostModel from "../models/adminPost/adminPostModel";
 
-// get post
+// get posts
 export const getPosts = catchAsync(async (req: Request, res: Response) => {
     const posts = await adminPostModel.find({}).sort({ createdAt: -1 })
     res.status(200).json({ posts })

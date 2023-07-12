@@ -1,10 +1,16 @@
 import { Types } from "mongoose";
 import jwt from "jsonwebtoken";
+import { Request } from "express";
+
 
 export interface adminJwtPayload extends jwt.JwtPayload {
     adminId: string;
     email: string;
     isMaster: boolean;
+}
+
+export interface AuthenticatedRequest extends Request {
+    decodedToken: adminJwtPayload
 }
 
 interface UploadResponse {
@@ -94,11 +100,11 @@ export interface IUser {
             minHeight: number,
             maxHeight: number,
         },
-        caste?: string;
+        caste?: [string];
         occupation?: [string];
         qualification?: [string];
         location?: [string];
-        maritalStatus?: string;
+        maritalStatus?: [string];
     },
     membershipType: string;
     membershipValidity: Date;
@@ -108,8 +114,10 @@ export interface IUser {
     proposals: [Types.ObjectId];
     blockedProfiles: [Types.ObjectId];
     notInterested: [Types.ObjectId];
+    profileViews: number;
     status: string;
     isVerified: boolean;
     registartionStatus: [string];
-    password: string;
+    createdAt: Date;
+    updatedAt: Date;
 }

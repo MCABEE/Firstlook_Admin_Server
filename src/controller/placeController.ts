@@ -84,7 +84,7 @@ export const deleteState = catchAsync(async (req: Request, res: Response, next: 
         const districts = await districtModel.find({ state: stateId })
         if (districts.length) {
             reject(new AppError({
-                statusCode: 400,
+                statusCode: 403,
                 name: 'Relation with other documents',
                 message: 'Cannot delete, State has relation with districts'
             }))
@@ -97,7 +97,7 @@ export const deleteState = catchAsync(async (req: Request, res: Response, next: 
         const cities = await cityModel.find({ state: stateId })
         if (cities.length) {
             reject(new AppError({
-                statusCode: 400,
+                statusCode: 403,
                 name: 'Relation with other documents',
                 message: 'Cannot delete, State has relation with cities'
             }))
@@ -110,7 +110,7 @@ export const deleteState = catchAsync(async (req: Request, res: Response, next: 
         const languages = await languageModel.find({ state: stateId })
         if (languages.length) {
             reject(new AppError({
-                statusCode: 400,
+                statusCode: 403,
                 name: 'Relation with other documents',
                 message: 'Cannot delete, State has relation with mother tounge'
             }))
@@ -198,7 +198,7 @@ export const deleteDistrict = catchAsync(async (req: Request, res: Response, nex
         const homeTowns = await homeTownModel.find({ district: districtId })
         if (homeTowns.length) {
             return reject(new AppError({
-                statusCode: 400,
+                statusCode: 403,
                 name: 'Relation with other documents',
                 message: "couldn't delete, District has relation with Hometown"
             }))
@@ -210,7 +210,7 @@ export const deleteDistrict = catchAsync(async (req: Request, res: Response, nex
         const pincodes = await pincodeModel.find({ district: districtId })
         if (pincodes.length) {
             return reject(new AppError({
-                statusCode: 400,
+                statusCode: 403,
                 name: 'Relation with other documents',
                 message: "couldn't delete, District has relation with Pincode"
             }))
@@ -321,11 +321,10 @@ export const deleteHomeTown = catchAsync(async (req: Request, res: Response) => 
 
 // New Pincode
 export const newPincode = catchAsync(async (req: Request, res: Response) => {
-    const { districtId, pincode, postOffice } = req.body;
+    const { districtId, pincode } = req.body;
     const newPincode = new pincodeModel({
         district: districtId,
         code: pincode,
-        postOffice,
     })
     await newPincode.save()
     res.sendStatus(201)

@@ -193,12 +193,8 @@ const userSchema = new mongoose.Schema({
             minAge: Number,
             maxAge: Number,
         },
-        height: {
-            minHeight: Number,
-            maxHeight: Number,
-        },
         caste: {
-            type: String
+            type: [String]
         },
         occupation: {
             type: [String]
@@ -210,7 +206,7 @@ const userSchema = new mongoose.Schema({
             type: [String]
         },
         maritalStatus: {
-            type: String
+            type: [String]
         },
     },
     membershipType: {
@@ -245,6 +241,10 @@ const userSchema = new mongoose.Schema({
         type: Types.ObjectId,
         ref: 'User',
     }],
+    profileViews: {
+        type: Number,
+        default: 0
+    },
     status: {
         type: String,
         default: 'Active'
@@ -257,19 +257,6 @@ const userSchema = new mongoose.Schema({
         type: [String],
         default: ["About You", "Native", "Personal Info", "Academic", "Occupation", "Family", "Upload", "Verification"]
     },
-    password: {
-        type: String,
-        minlength: 8,
-        select: false
-    },
-
-    // passwordConfirm: {
-    //     type: String,
-    // },
-    // passwordChangedAt: Date,
-    // passwordResetToken: String,
-    // passwordResetExpires: Date
-
 }, { timestamps: true })
 
 export default mongoose.model<IUser>('User', userSchema)
