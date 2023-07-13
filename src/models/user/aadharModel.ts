@@ -7,9 +7,14 @@ interface IAadhar extends Document {
     dob: Date;
     fatherName: string;
     address: string;
-    images: {
+    images?: {
         sideOne: { url: string, id: string };
         sideTwo: { url: string, id: string };
+    };
+    verification: {
+        verified: boolean;
+        verifiedBy: Types.ObjectId;
+        verificationDate: Date
     }
 }
 
@@ -37,9 +42,18 @@ const aadharSchema = new Schema({
         sideOne: { url: String, id: String },
         sideTwo: { url: String, id: String },
     },
-    isVerified: {
-        type: Boolean,
-        default: false
+    verification: {
+        verified: {
+            type: Boolean,
+            default: false
+        },
+        verifiedBy: {
+            type: Types.ObjectId,
+            ref: 'Admin'
+        },
+        verificationDate: {
+            type: Date
+        },
     }
 }, { timestamps: true })
 
