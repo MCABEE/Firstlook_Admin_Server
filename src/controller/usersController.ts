@@ -66,12 +66,17 @@ export const aadharDetails = catchAsync(async (req: Request, res: Response) => {
 
 // Approve ID
 export const verifyId = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.query.userId;
-    await aadharModel.findOneAndUpdate({ userId }, { $set: { 'verification.verified': true, 'verification.verifiedBy': req.decodedToken.adminId, 'verification.verificationDate': Date.now() } })
+    const userId = req.params.userId;
+    const aadhar = await aadharModel.findOneAndUpdate({ userId }, { $set: { 'verification.verified': true, 'verification.verifiedBy': req.decodedToken.adminId, 'verification.verificationDate': Date.now() } })
+    if (!aadhar) { throw new AppError({ statusCode: 404, message: 'ID not found' }) }
+    res.sendStatus(200)
 })
 
 // Reject ID
 export const rejectId = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.query.userId;
-    await aadharModel.findOneAndUpdate({ userId }, { $set: { 'verification.verified': false, 'verification.verifiedBy': req.decodedToken.adminId, 'verification.verificationDate': Date.now() } })
+    const userId = req.params.userId;
+    const aadhar = await aadharModel.findOneAndUpdate({ userId }, { $set: { 'verification.verified': false, 'verification.verifiedBy': req.decodedToken.adminId, 'verification.verificationDate': Date.now() } })
+    if (!aadhar) { throw new AppError({ statusCode: 404, message: 'ID not found' }) }
+
+    res.sendStatus(200)
 })

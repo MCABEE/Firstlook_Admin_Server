@@ -22,6 +22,8 @@ router
 router
     .route('/aadharDetails/:userId')
     .get(usersController.aadharDetails)
+    .patch(usersController.verifyId)
+    .post(usersController.rejectId)
 
 
 export default router;
